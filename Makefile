@@ -1,3 +1,6 @@
+list:
+	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$'
+
 postgres:
 	docker run --name postgres12 -p 5432:5432  -e POSTGRES_USER=root -e POSTGRES_PASSWORD=notpass -d postgres:alpine
 
@@ -19,4 +22,4 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-.PHONY: postgres createdb drobdb migrateup migratedown sqlc test
+.PHONY: list postgres createdb drobdb migrateup migratedown sqlc test
